@@ -164,6 +164,33 @@ services:
 #    networks:
 #      - kafka-shared-net
 
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    environment:
+    # ═══════════════════════════════════════════════════════════════
+    # Auth Service Configuration
+    # ═══════════════════════════════════════════════════════════════
+
+    # JWT Token Secret (base64 encoded - use a strong random value in production)
+      JWT_SECRET: Y2hhVEc3aHJnb0hYTzMyZ2ZqVkpiZ1RkZG93YWxrUkM=
+
+      # Database Connection
+      DB_JDBC_URL: jdbc:postgresql://localhost:5432/auth-service-db
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      DB_DRIVER: org.postgresql.Driver
+
+      # Spring Configuration
+      SPRING_PROFILE: development
+      SERVER_PORT: 4005
+    ports:
+      - "4005:4005"
+#    networks:
+#      - kafka-shared-net
+
 #networks:
 #  kafka-shared-net:
 #    driver: bridge
