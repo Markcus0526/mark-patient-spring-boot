@@ -1,0 +1,139 @@
+services:
+  kafka:
+    image: apache/kafka:4.1.1
+    container_name: kafka
+    environment:
+      # 1. Identity & Roles (KRaft)
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@localhost:9093'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+
+      # 2. Listeners (0.0.0.0 for binding)
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093'
+
+      # 3. Advertised (NO 0.0.0.0 HERE)
+      # 'kafka' is for your services, 'localhost' is for IntelliJ/Host
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094'
+
+      # 4. Security Mapping
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT'
+
+      # 5. Cluster ID (Matches your logs)
+      CLUSTER_ID: '5L6g3nShT-eMCtK--X86sw'
+
+      # 6. Auto-Create Topics (Optional for Dev)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    ports:
+      - "9092:9092"
+      - "9094:9094"  # External port for IntelliJ / Host
+#    networks:
+#      - kafka-shared-net
+
+  patient-service-db:
+    image: postgres:15-alpine
+    container_name: patient-service-db
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: admin_user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+#    networks:
+#      - kafka-shared-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin_user -d db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  patient-service:
+    build:
+      context: ./patient-service
+      dockerfile: Dockerfile
+    container_name: patient-service
+    environment:
+      # ═══════════════════════════════════════════════════════════════
+      # Patient Service Configuration
+      # ═══════════════════════════════════════════════════════════════
+
+      # Database Connection
+      DB_JDBC_URL: jdbc:postgresql://localhost:5432/patient-service-db
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      DB_DRIVER: org.postgresql.Driver
+
+      # Billing Service gRPC
+      BILLING_SERVICE_ADDRESS: billing-service
+      BILLING_SERVICE_GRPC_PORT: 9001
+
+      # Kafka Configuration
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: patient-events
+      KAFKA_CONSUMER_GROUP: patient-service-group
+
+      # Spring Configuration
+      SPRING_PROFILE: development
+      SERVER_PORT: 4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - kafka
+      - patient-service-db # Add this to ensure DB starts first
+      - billing-service    # Add this to ensure Billing starts first
+#    networks:
+#      - kafka-shared-net
+
+  billing-service:
+    build:
+      context: ./billing-service
+      dockerfile: Dockerfile
+    container_name: billing-service
+    environment:
+      # ═══════════════════════════════════════════════════════════════
+      # Billing Service Configuration
+      # ═══════════════════════════════════════════════════════════════
+
+      # gRPC Server Configuration
+      GRPC_SERVER_PORT: 9001
+      GRPC_MAX_INBOUND_MESSAGE_SIZE: 4194304
+
+      # Spring Configuration
+      SPRING_PROFILE: development
+      SERVER_PORT: 4001
+    ports:
+      - "4001:4001"
+      - "9001:9001"
+    depends_on:
+      - kafka
+
+  analytics-service:
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile
+    container_name: analytics-service
+    environment:
+      # ═══════════════════════════════════════════════════════════════
+      # Analytics Service Configuration
+      # ═══════════════════════════════════════════════════════════════
+
+      # Kafka Consumer Configuration
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: patient-events
+      KAFKA_CONSUMER_GROUP: analytics-service-group
+      KAFKA_AUTO_OFFSET_RESET: earliest
+
+      # Spring Configuration
+      SPRING_PROFILE: development
+      SERVER_PORT: 4002
+    ports:
+      - "4002:4002"
+    depends_on:
+      - kafka
+#    networks:
+#      - kafka-shared-net
+
+#networks:
+#  kafka-shared-net:
+#    driver: bridge
