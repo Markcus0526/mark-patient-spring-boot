@@ -40,8 +40,19 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+
+  auth-service-db:
+    image: postgres:15-alpine
+    container_name: auth-service-db
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: admin_user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
 #    networks:
 #      - kafka-shared-net
+
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U admin_user -d db" ]
       interval: 5s
@@ -131,6 +142,25 @@ services:
       - "4002:4002"
     depends_on:
       - kafka
+#    networks:
+#      - kafka-shared-net
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    environment:
+      # ═══════════════════════════════════════════════════════════════
+      # api-gateway Configuration
+      # ═══════════════════════════════════════════════════════════════
+      PATIENT_SERVICE_URL: http://patient-service:4000
+      BILLING_SERVICE_URL: http://billing-service:4001
+      # Spring Configuration
+      SPRING_PROFILE: development
+      SERVER_PORT: 4004
+    ports:
+      - "4004:4004"
 #    networks:
 #      - kafka-shared-net
 
