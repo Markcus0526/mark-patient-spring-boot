@@ -7,6 +7,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import patient.events.PatientEvent;
 
+import java.util.Arrays;
+
 @Service
 public class KafkaProducer {
     private static final Logger log = LoggerFactory.getLogger(
@@ -27,6 +29,8 @@ public class KafkaProducer {
                 .build();
 
         try {
+            log.info("kafkaSend: {}", Arrays.toString(event.toByteArray()));
+
             kafkaTemplate.send("patient", event.toByteArray());
         } catch (Exception e) {
             log.error("Error sending PatientCreated event: {}", event);
