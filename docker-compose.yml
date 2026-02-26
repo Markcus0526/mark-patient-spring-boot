@@ -168,6 +168,7 @@ services:
       # ═══════════════════════════════════════════════════════════════
       # api-gateway Configuration
       # ═══════════════════════════════════════════════════════════════
+      AUTH_SERVICE_URL: http://auth-service:4005/validate
       PATIENT_SERVICE_URL: http://patient-service:4000
       BILLING_SERVICE_URL: http://billing-service:4001
       # Spring Configuration

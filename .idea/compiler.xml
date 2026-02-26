@@ -10,11 +10,13 @@
         <module name="api-gateway" />
         <module name="patient-service" />
         <module name="auth-service" />
+        <module name="integration-tests" />
         <module name="billing-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="gateway" target="1.5" />
+      <module name="untitled" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
