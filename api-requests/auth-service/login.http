@@ -1,9 +1,14 @@
-### GET request to example server
-GET http://localhost:4004/auth/login
+### POST request to example server
+POST http://localhost:4004/auth/login
 Content-Type: application/json
 
 {
   "email": "testuser@test.com",
   "password": "password123"
 }
-###
+
+> {%
+    // Access the specific field 'token' from the response object
+    client.global.set("token", response.body.token);
+    client.log("Clean Token set: " + client.global.get("token"));
+%}
