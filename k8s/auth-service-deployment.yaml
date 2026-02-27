@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: auth-service
+  name: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: auth-service
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: auth-service
+    spec:
+      containers:
+        - env:
+            - name: JWT_SECRET
+              value: Y2hhVEc3aHJnb0hYTzMyZ2ZqVkpiZ1RkZG93YWxrUkM=
+            - name: SERVER_PORT
+              value: "4005"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: password
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://auth-service-db:5432/db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: admin_user
+            - name: SPRING_PROFILE
+              value: development
+          image: auth-service
+          name: auth-service
+          ports:
+            - containerPort: 4005
+              protocol: TCP
+      restartPolicy: Always

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: analytics-service
+  name: analytics-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: analytics-service
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: analytics-service
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_AUTO_OFFSET_RESET
+              value: earliest
+            - name: KAFKA_CONSUMER_GROUP
+              value: analytics-service-group
+            - name: KAFKA_TOPIC
+              value: patient-events
+            - name: SERVER_PORT
+              value: "4002"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: SPRING_PROFILE
+              value: development
+          image: analytics-service
+          name: analytics-service
+          ports:
+            - containerPort: 4002
+              protocol: TCP
+      restartPolicy: Always

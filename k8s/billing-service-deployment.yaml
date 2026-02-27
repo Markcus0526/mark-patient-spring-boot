@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: billing-service
+  name: billing-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: billing-service
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: billing-service
+    spec:
+      containers:
+        - env:
+            - name: GRPC_MAX_INBOUND_MESSAGE_SIZE
+              value: "4194304"
+            - name: GRPC_SERVER_PORT
+              value: "9001"
+            - name: SERVER_PORT
+              value: "4001"
+            - name: SPRING_PROFILE
+              value: development
+          image: billing-service
+          name: billing-service
+          ports:
+            - containerPort: 4001
+              protocol: TCP
+            - containerPort: 9001
+              protocol: TCP
+      restartPolicy: Always
