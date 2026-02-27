@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: patient-service-db
+  name: patient-service-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: patient-service-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: D:\0_COMMON\kompose\kompose-windows-amd64.exe --file .\docker-compose.yml convert
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: patient-service-db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: db
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_USER
+              value: admin_user
+          image: postgres:15-alpine
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready -U admin_user -d db
+            failureThreshold: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+          name: patient-service-db
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: patient-service-db-cm0
+            - mountPath: /docker-entrypoint-initdb.d/data.sql
+              name: patient-service-db-cm1
+              readOnly: true
+              subPath: data.sql
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            name: patient-service-db-cm0
+          name: patient-service-db-cm0
+        - configMap:
+            items:
+              - key: data.sql
+                path: data.sql
+            name: patient-service-db-cm1
+          name: patient-service-db-cm1
