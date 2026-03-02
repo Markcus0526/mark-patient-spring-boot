@@ -1,11 +1,4 @@
-<<<<<<< Updated upstream
 # mark-patient-spring-boot
-
-A brief description of what this project does and who it's for.
-=======
-# Patient Management System - Microservices
-
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/Markcus0526/mark-patient-spring-boot.git)
 
 This repository contains a Patient Management System built using a microservices architecture. It demonstrates the integration of various modern technologies, including Spring Boot, Docker, Apache Kafka for asynchronous messaging, and gRPC for inter-service communication.
 
@@ -146,4 +139,4 @@ To deploy this stack to a running LocalStack instance:
 2. Run the deployment script:
    ```bash
    ./infrastructure/localstack-deploy.sh
->>>>>>> Stashed changes
+

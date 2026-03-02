@@ -29,14 +29,22 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: password
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://auth-service-db:5432/db
+              value: jdbc:postgresql://auth-service-db:5433/db
             - name: SPRING_DATASOURCE_USERNAME
               value: admin_user
             - name: SPRING_PROFILE
               value: development
-          image: auth-service
+          image: auth-service:latest  # Add a tag. In terminal run following: docker build -t auth-service:latest
+          imagePullPolicy: IfNotPresent    # IMPORTANT for local images
           name: auth-service
           ports:
             - containerPort: 4005
               protocol: TCP
+          # Optional: Add a readiness probe to ensure Spring Boot is fully up
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 4002
+            initialDelaySeconds: 20
+            periodSeconds: 10
       restartPolicy: Always

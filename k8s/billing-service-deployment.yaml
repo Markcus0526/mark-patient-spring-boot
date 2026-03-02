@@ -30,11 +30,19 @@ spec:
               value: "4001"
             - name: SPRING_PROFILE
               value: development
-          image: billing-service
+          image: billing-service:latest  # Add a tag. In terminal run following: docker build -t billing-service:latest
+          imagePullPolicy: IfNotPresent    # IMPORTANT for local images
           name: billing-service
           ports:
             - containerPort: 4001
               protocol: TCP
             - containerPort: 9001
               protocol: TCP
+          # Optional: Add a readiness probe to ensure Spring Boot is fully up
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 4002
+            initialDelaySeconds: 20
+            periodSeconds: 10
       restartPolicy: Always
