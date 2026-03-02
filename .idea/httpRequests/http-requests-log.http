@@ -1,0 +1,34 @@
+GET http://localhost:4004/api/patients
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3MjE2MDQ1MCwiZXhwIjoxNzcyMTk2NDUwfQ.7O0UIrPASLPDUGjPO7SSkbJeScZROj9GXXfVXsKAjGs
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+<> 2026-02-27T034742.200.json
+
+###
+
+GET http://localhost:4004/auth/validate
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlckB0ZXN0LmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3MjE2MDQ1MCwiZXhwIjoxNzcyMTk2NDUwfQ.7O0UIrPASLPDUGjPO7SSkbJeScZROj9GXXfVXsKAjGs
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+###
+
+POST http://localhost:4004/auth/login
+Content-Type: application/json
+Content-Length: 63
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "email": "testuser@test.com",
+  "password": "password123"
+}
+
+<> 2026-02-27T034731.200.json
+
+###
+
