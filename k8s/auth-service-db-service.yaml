@@ -8,6 +8,7 @@ metadata:
     io.kompose.service: auth-service-db
   name: auth-service-db
 spec:
+#  type: LoadBalancer
   ports:
     - name: "5433"
       port: 5433

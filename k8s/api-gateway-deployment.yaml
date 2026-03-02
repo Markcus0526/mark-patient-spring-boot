@@ -32,9 +32,17 @@ spec:
               value: "4004"
             - name: SPRING_PROFILE
               value: development
-          image: api-gateway
+          image: api-gateway:latest  # Add a tag. In terminal run following: docker build -t api-gateway:latest
+          imagePullPolicy: IfNotPresent    # IMPORTANT for local images
           name: api-gateway
           ports:
             - containerPort: 4004
               protocol: TCP
+          # Optional: Add a readiness probe to ensure Spring Boot is fully up
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 4002
+            initialDelaySeconds: 20
+            periodSeconds: 10
       restartPolicy: Always
