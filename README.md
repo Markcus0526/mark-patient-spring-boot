@@ -3,7 +3,7 @@ mark-patient-spring-boot
 This repository contains a Patient Management System built using a microservices architecture. It demonstrates the integration of various modern technologies, including Spring Boot, Docker, Apache Kafka for asynchronous messaging, and gRPC for inter-service communication.
 
 
-#Architecture Overview
+# Architecture Overview
 
 The system is composed of several independent services that work together, all orchestrated via Docker Compose for local development.
 
@@ -21,7 +21,7 @@ The system is composed of several independent services that work together, all o
 
 -   **Databases (`patient-service-db`, `auth-service-db`)**: Two separate PostgreSQL instances to ensure data isolation between the patient and authentication services.
 
-#Technologies Used
+# Technologies Used
 
 -   **Backend**: Java (17 \& 21), Spring Boot, Spring Security, Spring Data JPA
 
@@ -39,7 +39,7 @@ The system is composed of several independent services that work together, all o
 
 -   **Testing**: JUnit, REST Assured
 
-#Prerequisites
+# Prerequisites
 
 -   Java Development Kit (JDK 17 or newer)
 
@@ -47,30 +47,30 @@ The system is composed of several independent services that work together, all o
 
 -   Docker and Docker Compose
 
-#Getting Started
+# Getting Started
 
 To run the entire system locally, you can use the provided Docker Compose configuration.
 
 1.  **Clone the repository:**
 
-&nbsp;   ```bash
+   ```bash
 
-&nbsp;   git clone https://github.com/markcus0526/mark-patient-spring-boot.git
+   git clone https://github.com/markcus0526/mark-patient-spring-boot.git
 
-&nbsp;   cd mark-patient-spring-boot
+   cd mark-patient-spring-boot
 
-&nbsp;   ```
+   ```
 
 
 2.  **Build and run the services using Docker Compose:**
 
-&nbsp;   This command will build the Docker images for each service and start all the containers defined in the `docker-compose.yml` file.
+   This command will build the Docker images for each service and start all the containers defined in the `docker-compose.yml` file.
 
-&nbsp;   ```bash
+   ```bash
 
-&nbsp;   docker-compose up --build
+   docker-compose up --build
 
-&nbsp;   ```
+   ```
 
 
 The services will be available at the following ports on `localhost`:
@@ -93,11 +93,11 @@ The services will be available at the following ports on `localhost`:
 
 -   **Kafka**: `9092` (internal), `9094` (external)
 
-#How to Use the API
+# How to Use the API
 
 All API requests should be sent to the **API Gateway** at `http://localhost:4004`. The repository includes `.http` files in the `api-requests/` and `grpc-requests/` directories that can be used with IntelliJ IDEA's HTTP Client or similar tools.
 
-##1. Authentication
+## 1. Authentication
 
 First, obtain a JWT token by logging in.
 
@@ -107,9 +107,9 @@ First, obtain a JWT token by logging in.
 
 {
 
-&nbsp; "email": "testuser@test.com",
+ "email": "testuser@test.com",
 
-&nbsp; "password": "password123"
+ "password": "password123"
 
 }
 
@@ -117,7 +117,7 @@ First, obtain a JWT token by logging in.
 
 The response will contain a JWT token. This token must be included in the `Authorization` header as a Bearer token for all subsequent protected requests (e.g., `Authorization: Bearer <your\_token>`).
 
-##2. Patient Management
+## 2. Patient Management
 
 The following endpoints are available for managing patients. They are routed through the API Gateway and require a valid JWT token.
 
@@ -125,29 +125,29 @@ The following endpoints are available for managing patients. They are routed thr
 
 -   **Create a new patient:** `POST /api/patients`
 
-&nbsp;   ```json
+   ```json
 
-&nbsp;   {
+   {
 
-&nbsp;     "name": "John Doe",
+     "name": "John Doe",
 
-&nbsp;     "email": "test@example.com",
+     "email": "test@example.com",
 
-&nbsp;     "address": "4 main street",
+     "address": "4 main street",
 
-&nbsp;     "dateOfBirth": "1995-09-09",
+     "dateOfBirth": "1995-09-09",
 
-&nbsp;     "registeredDate": "2026-02-15"
+     "registeredDate": "2026-02-15"
 
-&nbsp;   }
+   }
 
-&nbsp;   ```
+   ```
 
 -   **Update a patient:** `PUT /api/patients/{patientId}`
 
 -   **Delete a patient:** `DELETE /api/patients/{patientId}`
 
-##3. gRPC Communication
+## 3. gRPC Communication
 
 The `patient-service` communicates with the `billing-service` over gRPC on port `9001`. You can test this endpoint directly using a gRPC client.
 
@@ -157,17 +157,17 @@ The `patient-service` communicates with the `billing-service` over gRPC on port 
 
 {
 
-&nbsp; "patientId": "12333",
+ "patientId": "12333",
 
-&nbsp; "name": "John Doe",
+ "name": "John Doe",
 
-&nbsp; "email": "john.doe@example.com"
+ "email": "john.doe@example.com"
 
 }
 
 ```
 
-#Integration Tests
+# Integration Tests
 
 The `integration-tests` module contains end-to-end tests that interact with the running services through the API Gateway. These tests use REST Assured to validate API behavior.
 
@@ -181,13 +181,13 @@ mvn test
 
 ```
 
-#Deployment and Infrastructure
+# Deployment and Infrastructure
 
-##Kubernetes
+## Kubernetes
 
 The `k8s/` directory contains Kubernetes deployment and service manifests. These were generated from the `docker-compose.yml` file using Kompose and can be used as a starting point for deploying the application to a Kubernetes cluster.
 
-##AWS CDK for LocalStack
+## AWS CDK for LocalStack
 
 The `infrastructure/` directory contains an AWS CDK project for provisioning the required cloud infrastructure on LocalStack. This demonstrates an Infrastructure-as-Code approach to setting up a VPC, ECS cluster with Fargate services, RDS databases, and an MSK (Kafka) cluster.
 
@@ -197,6 +197,6 @@ To deploy this stack to a running LocalStack instance:
 
 2. Run the deployment script:
 
-&nbsp;  ```bash
+  ```bash
 
-&nbsp;  ./infrastructure/localstack-deploy.sh
+  ./infrastructure/localstack-deploy.sh
